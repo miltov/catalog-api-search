@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 export default async function handler(req, res) {
   const { keyword, limit = 10 } = req.query;
 
@@ -6,16 +8,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    const robloxResponse = await fetch(`https://catalog.roblox.com/v2/catalog/items/details?keyword=${encodeURIComponent(keyword)}&limit=${limit}`);
-
-    if (!robloxResponse.ok) {
-      return res.status(robloxResponse.status).json({ error: 'Roblox API error' });
-    }
-
-    const data = await robloxResponse.json();
-    return res.status(200).json(data);
+    const response = await axios.get('https://catalog.roblox.com/v2/catalog/items/details', {
+      params: { keyword, limit }
+    });
+    res.status(200).json(response.data);
   } catch (error) {
-    console.error('Error fetching Roblox catalog:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error fetching Roblox catalog:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 }
