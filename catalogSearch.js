@@ -1,25 +1,27 @@
-import fetch from "node-fetch";
+import axios from "axios";
 
 export default async function catalogSearchHandler(req, res) {
-  const { keyword = "", limit = 10 } = req.query;
+  const { keyword, limit = 10 } = req.query;
 
-  if (!keyword.trim()) {
+  if (!keyword) {
     return res.status(400).json({ error: "Missing keyword parameter" });
   }
 
   try {
-    const url = `https://catalog.roblox.com/v1/search/items?Keyword=${encodeURIComponent(keyword)}&Limit=${limit}&SortType=3`;
+    const response = await axios.post("https://catalog.roblox.com/v1/search/items", {
+      Keyword: keyword,
+      Limit: Number(limit),
+      SortType: 3,
+      Category: 1, // 1 = All categories
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
 
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      return res.status(response.status).json({ error: "Roblox API error" });
-    }
-
-    const data = await response.json();
-    return res.status(200).json(data);
-  } catch (err) {
-    console.error("Error fetching Roblox catalog:", err);
-    return res.status(500).json({ error: "Internal Server Error" });
+    res.status(200).json(response.data);
+  } catch (error) {
+    console.error("Roblox API error:", error.response?.data || error.message);
+    res.status(500).json({ error: "Roblox API error" });
   }
 }
