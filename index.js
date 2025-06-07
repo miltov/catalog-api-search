@@ -6,6 +6,7 @@ const PORT = process.env.PORT || 3000;
 
 app.get("/api/catalogSearch", catalogSearchHandler);
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const port = process.env.PORT || 3000;  // 3000 fallback for local dev
+app.listen(port, () => {
+  console.log(`Server started on port ${port}`);
 });
