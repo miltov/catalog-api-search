@@ -11,7 +11,7 @@ export const cache = new NodeCache({ stdTTL: 60 }); // cache each keyword for 60
 
 // Rate limiter: 10 requests per minute per IP
 const limiter = rateLimit({
-  windowMs: 30 * 1000,
+  windowMs: 10 * 1000,
   max: 10,
   message: { error: "Too many requests, please try again later." },
 });
