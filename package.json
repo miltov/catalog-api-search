@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "roblox-catalog-proxy",
   "version": "1.0.0",
   "main": "index.js",
